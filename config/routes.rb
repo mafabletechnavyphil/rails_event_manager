@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
+  resources :invitations
   devise_for :users
   # resources :rsvps
   # resources :events
 
   resources :events do
     resources :rsvps, only: [:create, :destroy]
+    resources :invitations, only: [:create, :destroy]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

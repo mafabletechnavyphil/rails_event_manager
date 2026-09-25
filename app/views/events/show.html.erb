@@ -51,7 +51,6 @@
                   <!-- Cancel Registration Endpoint -->
                   <% if @event.user == current_user %>
                     <% existing_rsvp = @event.rsvps.find_by(user: rsvp.user) %>
-                    <%= existing_rsvp.id %>
                     <%= button_to 'Remove Attendee', event_rsvp_path(@event, existing_rsvp), method: :delete, class: "text-xs text-red-500 hover:text-red-700 hover:underline cursor-pointer" %>
                   <% end %>
                 </li>
@@ -62,6 +61,50 @@
           <p class="text-sm text-gray-500 py-2">No one has registered yet. Be the first!</p>
         <% end %>
       </div>
+
+      <% if @event.user == current_user %>
+        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Invited People (<%= @event.invitations.count %>)</h3>
+            <% if @event.invitations.any? %>
+                <ul class="divide-y divide-gray-100">
+                <% @event.invitations.each do |inv| %>
+                <% if inv.persisted? %>
+                    <li class="py-3 flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900"><%= inv.user.email %></p>
+                            <p class="text-xs text-gray-500"><%= inv.user.email %></p>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <p class="text-xs bg-blue-500 text-white px-2 py-1 rounded-sm"><%= inv.status %></p>
+                            <%= button_to "Cancel", event_invitation_path(@event, inv), method: :delete, class: "text-xs bg-red-50 hover:bg-red-100 text-red-600 font-medium py-1 px-2.5 rounded transition cursor-pointer" %>
+                        </div>
+                    </li>
+                    <% end %>
+                <% end %>
+                </ul>
+            <% else %>
+            <p class="text-sm text-gray-500 py-2">You have no pending invitations!</p>
+            <% end %>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <% if @event.user == current_user %>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Invite Users to Event</h3>
+                <% if @eligible_users.any? %>
+                    <%= form_with(model: [@event, @invitation], class: "flex items-center gap-3") do |form| %>
+
+                    <div class="flex-1">
+                        <%= form.select :user_id, @eligible_users, {},  { class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none" } %>
+                    </div>
+
+                    <%= form.submit "Send Invite", class: "bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-md shadow-sm cursor-pointer transition" %>
+                    <% end %>
+                <% else %>
+                    <p class="text-sm text-gray-500 italic">All available users have already been invited or registered.</p>
+                <% end %>
+            <% end %>
+        </div>
+      <% end %>
     </div>
 
     <div class="lg:col-span-1">
@@ -70,19 +113,19 @@
 
         <% if user_signed_in? %>
             <% if @event.user == current_user %>
-            <div class="p-3 bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-md text-center">
-                You are the host of this event.
-            </div>
-          <% elsif current_user.attended_events.include?(@event) %>
-            <% existing_rsvp = @event.rsvps.find_by(user: current_user) %>
-            <p class="text-sm text-green-700 font-medium mb-3 text-center">✓ You are registered!</p>
-            <%= button_to "Leave Event", event_rsvp_path(@event, existing_rsvp), method: :delete, class: "w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium text-sm py-2 px-4 rounded-md cursor-pointer transition text-center" %>
-          <% else %>
-            <%= button_to "Join Event", event_rsvps_path(@event), method: :post, class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-md shadow-sm cursor-pointer transition text-center" %>
-          <% end %>
+                <div class="p-3 bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-md text-center">
+                    You are the host of this event.
+                </div>
+            <% elsif current_user.attended_events.include?(@event) %>
+                <% existing_rsvp = @event.rsvps.find_by(user: current_user) %>
+                <p class="text-sm text-green-700 font-medium mb-3 text-center">✓ You are registered!</p>
+                <%= button_to "Leave Event", event_rsvp_path(@event, existing_rsvp), method: :delete, class: "w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium text-sm py-2 px-4 rounded-md cursor-pointer transition text-center" %>
+            <% else %>
+                <%= button_to "Join Event", event_rsvps_path(@event), method: :post, class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-md shadow-sm cursor-pointer transition text-center" %>
+            <% end %>
         <% else %>
-          <p class="text-sm text-gray-600 mb-4 text-center">You must be logged in to register for events.</p>
-          <%= link_to "Log In to Join", new_user_session_path, class: "block w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-md text-center transition shadow-sm" %>
+            <p class="text-sm text-gray-600 mb-4 text-center">You must be logged in to register for events.</p>
+            <%= link_to "Log In to Join", new_user_session_path, class: "block w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-md text-center transition shadow-sm" %>
         <% end %>
       </div>
     </div>

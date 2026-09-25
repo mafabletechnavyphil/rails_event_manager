@@ -11,6 +11,10 @@ class EventsController < ApplicationController
   # GET /events/:id
   def show
     @rsvp = @event.rsvps.build
+    @invitation = @event.invitations.build
+
+    excluded_user_ids = [@event.user_id] + @event.attendee_ids + @event.invitee_ids
+    @eligible_users = User.where.not(id: excluded_user_ids).map{ |u| [u.email, u.id]}
   end
 
   # GET /events/new

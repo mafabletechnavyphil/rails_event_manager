@@ -4,4 +4,7 @@ class Event < ApplicationRecord
   belongs_to :user
 
   validates :title, :location, :event_date, presence: true
+
+  has_many :invitations, dependent: :destroy
+  has_many :invitees, through: :invitations, source: :user
 end

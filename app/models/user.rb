@@ -9,4 +9,5 @@ class User < ApplicationRecord
   has_many :rsvps, dependent: :destroy
   has_many :attended_events, through: :rsvps, source: :event
 
+  has_many :invitations, dependent: :destroy
 end
