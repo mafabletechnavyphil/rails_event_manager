@@ -20,6 +20,10 @@
       <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
         <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @event.title %></h1>
 
+        <div class="text-xs my-4 font-semibold bg-blue-300 rounded p-1 text-blue-900">
+            Hosted by: <%= @event.user.email %>
+        </div>
+
         <div class="space-y-2 text-sm text-gray-600 mb-6">
           <p>📅 <span class="font-medium text-gray-900">Date/Time:</span> <%= @event.event_date.strftime("%B %d, %Y") if @event.event_date %></p>
           <p>📍 <span class="font-medium text-gray-900">Location:</span> <%= @event.location %></p>
@@ -30,10 +34,12 @@
         </div>
 
         <!-- Inline Management Controls -->
-        <div class="mt-6 pt-4 border-t border-gray-100 flex items-center gap-4">
-          <%= link_to 'Edit Details', edit_event_path(@event), class: "text-sm text-gray-600 hover:text-gray-900 font-medium underline" %>
-          <%= button_to 'Delete Event', event_path(@event), method: :delete, data: { confirm: 'Are you sure?' }, class: "text-sm text-red-600 hover:text-red-800 font-medium underline cursor-pointer" %>
-        </div>
+        <% if @event.user == current_user %>
+            <div class="mt-6 pt-4 border-t border-gray-100 flex items-center gap-4">
+              <%= link_to 'Edit Details', edit_event_path(@event), class: "text-sm text-gray-600 hover:text-gray-900 font-medium underline" %>
+              <%= button_to 'Delete Event', event_path(@event), method: :delete, data: { confirm: 'Are you sure?' }, class: "text-sm text-red-600 hover:text-red-800 font-medium underline cursor-pointer" %>
+            </div>
+        <% end %>
       </div>
 
       <!-- Guestlist Roster Component -->

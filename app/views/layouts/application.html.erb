@@ -24,8 +24,31 @@
   </head>
 
   <body>
+    <nav class="bg-white border-b border-gray-200 py-4 px-6 mb-6">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <!-- Brand / Home Link -->
+        <%= link_to "📅 EventManager", root_path, class: "text-xl font-bold text-gray-900" %>
+
+        <!-- Authentication Navigation Actions -->
+        <div class="flex items-center gap-4 text-sm font-medium">
+        <% if user_signed_in? %>
+            <!-- Display if logged in -->
+            <span class="text-gray-600">Logged in as: <strong class="text-gray-900"><%= current_user.email %></strong></span>
+            <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "text-red-600 hover:text-red-700 bg-none cursor-pointer" %>
+        <% else %>
+            <!-- Display if logged out -->
+            <%= link_to "Log In", new_user_session_path, class: "text-gray-600 hover:text-gray-900" %>
+            <%= link_to "Sign Up", new_user_registration_path, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded transition" %>
+        <% end %>
+        </div>
+    </div>
+    </nav>
+
     <main class="container mx-auto mt-28 px-5 flex">
       <%= yield %>
+
+      <!--<p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>-->
     </main>
   </body>
 </html>
