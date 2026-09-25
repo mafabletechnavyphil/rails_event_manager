@@ -1,0 +1,48 @@
+<div class="w-4xl mx-auto px-4 py-8">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Invited Events</h1>
+    <p class="text-sm text-gray-500 mt-1">Review and manage events you have been invited to join.</p>
+  </div>
+
+  <% if flash[:notice] %>
+    <div class="mb-6 p-4 bg-green-50 text-green-700 border-l-4 border-green-500 rounded shadow-sm text-sm">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
+  <% if @invitations.any? %>
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-100">
+      <% @invitations.each do |invitation| %>
+        <div class="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 hover:bg-gray-50 transition">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900 mb-1"><%= invitation.event.title %></h2>
+            <div class="text-xs text-gray-500 space-y-1">
+              <p>📅 <%= invitation.event.event_date.strftime("%B %d, %Y") if invitation.event.event_date %></p>
+              <p>📍 Location: <%= invitation.event.location %></p>
+              <p>👤 Hosted by: <span class="font-medium"><%= invitation.event.user.email %></span></p>
+            </div>
+          </div>
+
+          <!-- Actions Column -->
+          <div class="flex items-center gap-3 sm:self-center">
+            <%= link_to "View Event Details", event_path(invitation.event), class: "text-sm text-blue-600 hover:text-blue-800 font-medium underline" %>
+
+            <div class="flex items-center gap-3 sm:self-center">
+              <%= button_to 'Accept', accept_invitation_path(invitation),
+                  method: :patch,
+                  class: "text-sm bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded shadow-sm cursor-pointer transition" %>
+              <%= button_to 'Reject', reject_invitation_path(invitation),
+                method: :patch,
+                class: "text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-1 px-3 rounded border border-gray-300 cursor-pointer transition" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-12 bg-gray-50 border border-dashed border-gray-300 rounded-lg">
+      <p class="text-sm text-gray-500">Your inbox is clear! No pending event invitations found.</p>
+      <%= link_to "Explore Public Events", root_path, class: "text-blue-600 font-medium hover:underline text-sm inline-block mt-3" %>
+    </div>
+  <% end %>
+</div>

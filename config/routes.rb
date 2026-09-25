@@ -1,13 +1,18 @@
 Rails.application.routes.draw do
-  resources :invitations
   devise_for :users
-  # resources :rsvps
-  # resources :events
+
+  resources :invitations, only: [:index] do
+    member do
+      patch :accept
+      patch :reject
+    end
+  end
 
   resources :events do
     resources :rsvps, only: [:create, :destroy]
     resources :invitations, only: [:create, :destroy]
   end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

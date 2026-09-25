@@ -72,11 +72,13 @@
                     <li class="py-3 flex justify-between items-center">
                         <div>
                             <p class="text-sm font-semibold text-gray-900"><%= inv.user.email %></p>
-                            <p class="text-xs text-gray-500"><%= inv.user.email %></p>
+                            <p class="text-xs text-gray-500"><%= inv.created_at.strftime("%B %d, %Y") %></p>
                         </div>
                         <div class="flex gap-2 items-center">
-                            <p class="text-xs bg-blue-500 text-white px-2 py-1 rounded-sm"><%= inv.status %></p>
-                            <%= button_to "Cancel", event_invitation_path(@event, inv), method: :delete, class: "text-xs bg-red-50 hover:bg-red-100 text-red-600 font-medium py-1 px-2.5 rounded transition cursor-pointer" %>
+                            <p class="text-xs <%= inv.status %>  text-white px-2 py-1 rounded-sm"><%= inv.status %></p>
+                            <% unless inv.accepted? %>
+                                <%= button_to "Cancel", event_invitation_path(@event, inv), method: :delete, class: "text-xs bg-red-50 hover:bg-red-100 text-red-600 font-medium py-1 px-2.5 rounded transition cursor-pointer" %>
+                            <% end %>
                         </div>
                     </li>
                     <% end %>
