@@ -1,22 +1,17 @@
-<div class="max-w-6xl mx-auto px-4 py-8">
-  <!-- Back Navigation Link -->
+<div class="w-6xl mx-auto px-4 py-8">
   <div class="mb-6">
     <%= link_to '← Back to Events', events_path, class: "text-blue-600 hover:text-blue-800 font-medium text-sm" %>
   </div>
 
-  <!-- Main Split Layout Grid -->
   <div class="grid gap-8 lg:grid-cols-3">
 
-    <!-- Left Column: Details & Guestlist (Spans 2 columns) -->
     <div class="lg:col-span-2 space-y-6">
-      <!-- Flash Alert Banner -->
       <% if flash[:notice] %>
         <div class="p-4 bg-green-50 text-green-700 border-l-4 border-green-500 rounded-md">
           <%= flash[:notice] %>
         </div>
       <% end %>
 
-      <!-- Core Event Overview Details -->
       <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
         <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @event.title %></h1>
 
@@ -33,7 +28,6 @@
           <p class="whitespace-pre-line"><%= @event.description %></p>
         </div>
 
-        <!-- Inline Management Controls -->
         <% if @event.user == current_user %>
             <div class="mt-6 pt-4 border-t border-gray-100 flex items-center gap-4">
               <%= link_to 'Edit Details', edit_event_path(@event), class: "text-sm text-gray-600 hover:text-gray-900 font-medium underline" %>
@@ -42,7 +36,6 @@
         <% end %>
       </div>
 
-      <!-- Guestlist Roster Component -->
       <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
         <h3 class="text-lg font-bold text-gray-900 mb-4">Attendees (<%= @event.rsvps.count %>)</h3>
 
@@ -52,11 +45,15 @@
               <% if rsvp.persisted? %>
                 <li class="py-3 flex justify-between items-center">
                   <div>
-                    <p class="text-sm font-semibold text-gray-900"><%= rsvp.attendee_name %></p>
-                    <p class="text-xs text-gray-500"><%= rsvp.attendee_email %></p>
+                    <p class="text-sm font-semibold text-gray-900"><%= rsvp.user.email %></p>
+                    <p class="text-xs text-gray-500"><%= rsvp.user.email %></p>
                   </div>
                   <!-- Cancel Registration Endpoint -->
-                  <%= button_to 'Cancel', event_rsvp_path(@event, rsvp), method: :delete, class: "text-xs text-red-500 hover:text-red-700 hover:underline cursor-pointer" %>
+                  <% if @event.user == current_user %>
+                    <% existing_rsvp = @event.rsvps.find_by(user: rsvp.user) %>
+                    <%= existing_rsvp.id %>
+                    <%= button_to 'Remove Attendee', event_rsvp_path(@event, existing_rsvp), method: :delete, class: "text-xs text-red-500 hover:text-red-700 hover:underline cursor-pointer" %>
+                  <% end %>
                 </li>
               <% end %>
             <% end %>
@@ -67,12 +64,26 @@
       </div>
     </div>
 
-    <!-- Right Column: Contextual RSVP Input Form (Spans 1 column) -->
     <div class="lg:col-span-1">
       <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4">Register for this Event</h3>
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Event Registration</h3>
 
-
+        <% if user_signed_in? %>
+            <% if @event.user == current_user %>
+            <div class="p-3 bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-md text-center">
+                You are the host of this event.
+            </div>
+          <% elsif current_user.attended_events.include?(@event) %>
+            <% existing_rsvp = @event.rsvps.find_by(user: current_user) %>
+            <p class="text-sm text-green-700 font-medium mb-3 text-center">✓ You are registered!</p>
+            <%= button_to "Leave Event", event_rsvp_path(@event, existing_rsvp), method: :delete, class: "w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium text-sm py-2 px-4 rounded-md cursor-pointer transition text-center" %>
+          <% else %>
+            <%= button_to "Join Event", event_rsvps_path(@event), method: :post, class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-md shadow-sm cursor-pointer transition text-center" %>
+          <% end %>
+        <% else %>
+          <p class="text-sm text-gray-600 mb-4 text-center">You must be logged in to register for events.</p>
+          <%= link_to "Log In to Join", new_user_session_path, class: "block w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-md text-center transition shadow-sm" %>
+        <% end %>
       </div>
     </div>
 

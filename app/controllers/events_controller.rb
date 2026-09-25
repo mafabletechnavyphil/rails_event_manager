@@ -4,14 +4,12 @@ class EventsController < ApplicationController
 
   before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
-  # GET /events
   def index
-    @events = Event.all
+    @events = Event.order(event_date: :asc)
   end
 
   # GET /events/:id
   def show
-    # Instantiates a blank RSVP object for the form on the show page
     @rsvp = @event.rsvps.build
   end
 
