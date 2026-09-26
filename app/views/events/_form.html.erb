@@ -1,6 +1,4 @@
-<%= form_with(model: event, class: "space-y-6 w-100") do |form| %>
-
-  <!-- Error Handling Block -->
+<%= form_with(model: event, class: "space-y-6 w-full") do |form| %>
   <% if event.errors.any? %>
     <div class="bg-red-50 text-red-700 p-4 rounded-md border border-red-200">
       <h2 class="font-semibold mb-2"><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h2>
@@ -12,19 +10,16 @@
     </div>
   <% end %>
 
-  <!-- Title Input -->
   <div>
     <%= form.label :title, class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= form.text_field :title, placeholder: "e.g., Annual Tech Meetup", class: "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
   </div>
 
-  <!-- Description Textarea -->
   <div>
     <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= form.text_area :description, rows: 4, placeholder: "Describe what your event is about...", class: "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
   </div>
 
-  <!-- Location Input -->
   <div>
     <%= form.label :location, class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= form.text_field :location, placeholder: "e.g., Room 404, Innovation Hub or Zoom", class: "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
@@ -35,7 +30,6 @@
     <%= form.date_field :event_date, placeholder: "e.g., Room 404, Innovation Hub or Zoom", class: "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
   </div>
 
-  <!-- Form Actions -->
   <div class="flex items-center gap-4 pt-4 border-t border-gray-100">
     <%= form.submit class: "bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow-sm cursor-pointer transition" %>
     <%= link_to 'Cancel', events_path, class: "text-gray-600 hover:text-gray-900 font-medium text-sm" %>
