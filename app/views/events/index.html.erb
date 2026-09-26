@@ -1,5 +1,4 @@
 <div class="w-7xl mx-auto px-4 py-8">
-  <!-- Header Section -->
   <div class="flex justify-between items-center mb-8">
     <div>
       <h1 class="text-3xl font-bold text-gray-900">Upcoming Events</h1>
@@ -8,22 +7,27 @@
     <%= link_to 'Create New Event', new_event_path, class: "bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow-sm transition ease-in-out duration-150" %>
   </div>
 
-  <!-- Flash Messages (Notices) -->
   <% if flash[:notice] %>
     <div class="mb-6 p-4 bg-green-50 text-green-700 border-l-4 border-green-500 rounded">
       <%= flash[:notice] %>
     </div>
   <% end %>
 
-  <!-- Events Grid Grid -->
   <% if @events.any? %>
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <% @events.each do |event| %>
         <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div>
-            <span class="inline-block bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded mb-3">
-              <%= event.event_date.strftime("%B %d, %Y") if event.event_date %>
-            </span>
+            <div class="flex items-center justify-between mb-4">
+                <span class=" bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded">
+                  <%= event.event_date.strftime("%B %d, %Y") if event.event_date %>
+                </span>
+                <% if event.event_date == Date.current %>
+                    <div class="bg-green-500 rounded-sm text-xs px-2 py-1 text-white font-semibold w-fit">
+                        Event Now
+                    </div>
+                <% end %>
+            </div>
             <div class="text-xs my-4 font-semibold bg-blue-300 rounded p-1 text-blue-900">
                 Hosted by: <%= event.user.email %>
             </div>
@@ -31,14 +35,12 @@
             <h2 class="text-xl font-bold text-gray-900 mb-2 truncate"><%= event.title %></h2>
             <p class="text-gray-600 text-sm line-clamp-3 mb-4"><%= event.description %></p>
 
-            <!-- Location Details -->
             <div class="flex items-center text-xs text-gray-500 mb-6">
               <span class="font-medium mr-1">📍 Location:</span>
               <span class="truncate"><%= event.location %></span>
             </div>
           </div>
 
-          <!-- Bottom Action Buttons -->
           <div class="space-y-2 border-t border-gray-100 pt-4 mt-auto">
             <span class="text-xs block text-gray-500 font-medium">
               <%= event.rsvps.count %> attending
@@ -49,7 +51,6 @@
       <% end %>
     </div>
   <% else %>
-    <!-- Empty State -->
     <div class="text-center py-12 bg-gray-50 border border-dashed border-gray-300 rounded-lg">
       <p class="text-gray-500 mb-4">No events found. Be the first to create one!</p>
       <%= link_to 'Host an Event', new_event_path, class: "text-blue-600 font-medium hover:underline" %>

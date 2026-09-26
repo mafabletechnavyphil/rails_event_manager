@@ -13,7 +13,14 @@
       <% end %>
 
       <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @event.title %></h1>
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @event.title %></h1>
+            <% if @event.event_date == Date.current %>
+                <div class="bg-green-500 rounded-sm text-xs px-2 py-1 text-white font-semibold w-fit">
+                    Event Now
+                </div>
+            <% end %>
+        </div>
 
         <div class="text-xs my-4 font-semibold bg-blue-300 rounded p-1 text-blue-900">
             Hosted by: <%= @event.user.email %>
